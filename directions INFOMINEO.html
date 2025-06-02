@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>INFOMINEO Directional Code</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    h1 {
+      margin-top: 40px;
+      font-size: 48px;
+      font-weight: bold;
+      color: white;
+    }
+    h2 {
+      margin-top: -10px;
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+    }
+    #codeLabel {
+      font-size: 22px;
+      margin-top: 20px;
+    }
+    #codeInput {
+      font-size: 28px;
+      margin-top: 15px;
+      letter-spacing: 6px;
+      font-weight: bold;
+    }
+    #result {
+      font-size: 28px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    #reset {
+      margin-top: 10px;
+      font-size: 18px;
+      padding: 5px 15px;
+      cursor: pointer;
+      background: #222;
+      color: white;
+      border: 1px solid #555;
+      border-radius: 6px;
+    }
+    #arrowGrid {
+      display: grid;
+      grid-template-columns: 80px 80px 80px;
+      grid-template-rows: 80px 80px 80px;
+      justify-content: center;
+      align-items: center;
+      margin: 30px auto;
+      gap: 10px;
+    }
+    .arrow {
+      font-size: 28px;
+      padding: 15px;
+      cursor: pointer;
+      background-color: #111;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 8px;
+    }
+    .empty {
+      visibility: hidden;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<h1>INFOMINEO</h1>
+<h2>Brainshoring Services company</h2>
+<div id="codeLabel">Insert the directional code 🕵️</div>
+<div id="codeInput"></div>
+
+<div id="arrowGrid">
+  <div class="empty"></div>
+  <button class="arrow" onclick="addArrow('↑')">↑</button>
+  <div class="empty"></div>
+
+  <button class="arrow" onclick="addArrow('←')">←</button>
+  <div class="empty"></div>
+  <button class="arrow" onclick="addArrow('→')">→</button>
+
+  <div class="empty"></div>
+  <button class="arrow" onclick="addArrow('↓')">↓</button>
+  <div class="empty"></div>
+</div>
+
+<div id="result"></div>
+<button id="reset" onclick="resetCode()">Try Again</button>
+
+<script>
+  // Matrix background
+  const canvas = document.getElementById("matrix");
+  const ctx = canvas.getContext("2d");
+
+  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const fontSize = 16;
+  const columns = canvas.width / fontSize;
+  const drops = Array(Math.floor(columns)).fill(1);
+
+  function draw() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#00f";
+    ctx.font = fontSize + "px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = letters.charAt(Math.floor(Math.random() * letters.length));
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+
+      drops[i]++;
+    }
+  }
+
+  setInterval(draw, 33);
+
+  // Directional code logic
+  let code = "";
+  const correctCode = "↑↓→←";
+
+  function addArrow(symbol) {
+    if (code.length < 4) {
+      code += symbol;
+      document.getElementById("codeInput").textContent = code;
+    }
+
+    if (code.length === 4) {
+      const resultEl = document.getElementById("result");
+      if (code === correctCode) {
+        resultEl.style.color = "limegreen";
+        resultEl.textContent = "GOOD ANSWER";
+      } else {
+        resultEl.style.color = "red";
+        resultEl.textContent = "BAD ANSWER";
+      }
+    }
+  }
+
+  function resetCode() {
+    code = "";
+    document.getElementById("codeInput").textContent = "";
+    document.getElementById("result").textContent = "";
+  }
+</script>
+
+</body>
+</html>
